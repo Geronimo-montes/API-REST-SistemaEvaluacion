@@ -193,7 +193,7 @@ CREATE TABLE planTrabajo (
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
 CREATE TABLE evidencias (
-    idEvidencia int NOT NULL,
+    idEvidencia int NOT NULL AUTO_INCREMENT,
     idPlanTrabajo int NOT NULL,
     nombreEvidencia varchar(100) NOT NULL,
     descripcion varchar(200) NOT NULL,
@@ -205,11 +205,23 @@ CREATE TABLE evidencias (
 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
+CREATE TABLE cicloEscolar (
+  idCicloEscolar int PRIMARY KEY AUTO_INCREMENT,
+  inicioCiclo date,
+  finCiclo date,
+  diasHabiles smallint,
+  estatus varchar(1)
+)ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci;
+
+INSERT INTO cicloEscolar (inicioCiclo, finCiclo, diasHabiles, estatus) VALUES ("24-08-20", "09-07-21", 191, "a");
+
+
 CREATE TABLE actividadProgramada (
     idActividadProgramada int PRIMARY KEY AUTO_INCREMENT,
     idPlanTrabajo int NOT NULL, /*FK*/
     idNivelDesempeno tinyint NOT NULL,/*fk*/
     idPeriodoEvaluacion tinyint NOT NULL,/*fk*/
+    idCicloEscolar int NOT NULL,
     nivelDesempenoPonderado tinyint NOT NULL,
     observacion varchar(300) NOT NULL,
     fecha date NOT NULL,
@@ -217,7 +229,8 @@ CREATE TABLE actividadProgramada (
 
     FOREIGN KEY (idPlanTrabajo) REFERENCES planTrabajo (idPlanTrabajo),
     FOREIGN KEY (idNivelDesempeno) REFERENCES nivelDesempeno (idNivelDesempeno),
-    FOREIGN KEY (idPeriodoEvaluacion) REFERENCES periodoEvaluacion (idPeriodoEvaluacion)
+    FOREIGN KEY (idPeriodoEvaluacion) REFERENCES periodoEvaluacion (idPeriodoEvaluacion),
+    FOREIGN KEY (idCicloEscolar) REFERENCES cicloEscolar (idCicloEscolar)
 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
@@ -237,25 +250,26 @@ CREATE TABLE actividadAlumno (
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
 CREATE TABLE evaluacion (
-    idEvaluacion int NOT NULL,
     idAlumno int NOT NULL, /*fk*/
     idAreaFormacion tinyint NOT NULL,/*fk*/
     idPeriodoEvaluacion tinyint NOT NULL,/*fk*/
     idNivelDesempeno tinyint NOT NULL,/*fk*/
+    idCicloEscolar int NOT NULL,
     observacion varchar(500) NOT NULL,
     estatus varchar(1) NOT NULL,
+
     PRIMARY KEY (idEvaluacion, idAlumno, idAreaFormacion, idPeriodoEvaluacion),
 
     FOREIGN KEY (idAlumno) REFERENCES alumno (idAlumno),
     FOREIGN KEY (idAreaFormacion) REFERENCES areaFormacion (idAreaFormacion),
     FOREIGN KEY (idPeriodoEvaluacion) REFERENCES periodoEvaluacion (idPeriodoEvaluacion),
-    FOREIGN KEY (idNivelDesempeno) REFERENCES nivelDesempeno (idNivelDesempeno)
-
+    FOREIGN KEY (idNivelDesempeno) REFERENCES nivelDesempeno (idNivelDesempeno),
+    FOREIGN KEY (idCicloEscolar) REFERENCES cicloEscolar (idCicloEscolar)
 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
 CREATE TABLE cuadroHonor (
-    idCuadroHonor int NOT NULL,
+    idCuadroHonor int NOT NULL AUTO_INCREMENT,
     idAlumno int NOT NULL,
     idActividadProgramada int NOT NULL,
     PRIMARY KEY (idCuadroHonor, idAlumno, idActividadProgramada),

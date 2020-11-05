@@ -1,86 +1,57 @@
 <?php
-    class DocenteMapper extends Mapper
-    {
+    class DocenteMapper extends Mapper{
+        private function generarArray ($data){
+            $array = [];
+            foreach ($data as $docente) {
+                array_push($array, array(
+                    "idDocente"     => $docente->getidDocente(),
+                    "idEscuela" => $docente->getidEscuela(),
+                    "nombre"        => $docente->getnombre(),
+                    "ap1"           => $docente->getap1(),
+                    "ap2"           => $docente->getap2(),
+                    "curp"          => $docente->getcurp(),
+                    "rfc"           => $docente->getrfc(),
+                    "direccion"     => $docente->getdireccion(),
+                    "telefono"      => $docente->gettelefono(),
+                    "email"         => $docente->getemail(),
+                    "facebook"      => $docente->getfacebook(),
+                    "grupo"         => $docente->getgrupo(),
+                    "grado"         => $docente->getgrado(),
+                    "turno"         => $docente->getturno(),
+                    "rol"           => $docente->getrol(),
+                    "estatus"       => $docente->getestatus()
+                ));
+            }
+            return $array;
+        }
+
         public function getDocentes(){
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	listar informacion de los docentes
-        * Return:		array
-        **************************************************************************/
-            $sql = "SELECT d.idDocente, 
-                           e.nombre as nombreEscuela, 
-                           d.nombre, 
-                           d.ap1, 
-                           d.ap2,  
-                           d.curp, 
-                           d.rfc, 
-                           d.direccion, 
-                           d.telefono, 
-                           d.email, 
-                           d.facebook, 
-                           d.grupo, 
-                           d.grado, 
-                           d.turno, 
-                           d.rol, 
-                           d.estatus
-                    FROM docente d
-                    JOIN escuela e ON d.idEscuela = e.idEscuela
-                    WHERE estatus = 'a'";
-
+            $sql = "SELECT * FROM docente WHERE estatus = 'a'";
             $stmt = $this->db->query($sql);
-
             $results = [];
             while ($row = $stmt->fetch()){
                 $results[] = new DocenteEntity($row);
             }
 
-            return $results;
+            return $this->generarArray( $results );
         }
 
         public function getDocenteById($id){
-        /**************************************************************************
-        * Parametros:	$id -> id del docente a consultar
-        * Proposito:	consultar infpracion docente su informacion
-        * Return:		array
-        **************************************************************************/
-            $sql = "SELECT d.idDocente, 
-                           e.nombre as nombreEscuela, 
-                           d.nombre, 
-                           d.ap1, 
-                           d.ap2,  
-                           d.curp, 
-                           d.rfc, 
-                           d.direccion, 
-                           d.telefono, 
-                           d.email, 
-                           d.facebook, 
-                           d.grupo, 
-                           d.grado, 
-                           d.turno, 
-                           d.rol, 
-                           d.estatus
-                    FROM docente d
-                    JOIN escuela e ON d.idEscuela = e.idEscuela
-                    WHERE estatus = 'a' AND d.idDocente = :idDocente";
-
+            $sql = "SELECT * FROM docente WHERE estatus = 'a' AND idDocente = :idDocente";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(":idDocente", $id, PDO::PARAM_INT);
 
             if($stmt->execute()){
                 $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new DocenteEntity($results);
+                while ($row = $stmt->fetch()){
+                    $results[] = new DocenteEntity($row);
+                }
+    
+                return $this->generarArray( $results );
             }
         }
 
         public  function updateDocenteById (DocenteEntity $docente){
-        /**************************************************************************
-        * Parametros:	@DocenteEntity $docente -> tipo de dato coerrespodiente a los datos de un maestos
-        * Proposito:	actualizar su informacion
-        * Return:		true / flase
-        **************************************************************************/
             $sql = "UPDATE docente SET 
                     nombre = :nombre, 
                     ap1 = :ap1, 
@@ -99,11 +70,6 @@
                     WHERE idDocente = :idDocente";
 
             $stmt = $this->db->prepare($sql);
-
-            /**Para evitar que se produzca un error es necesario a la hora de bindear el parametro
-             * es necesario alacenarlos en una bariable dado que no es pocible hacerlo detro del metodo
-             * bindParam.
-             */
 
             $nombre     = $docente->getnombre();
             $ap1        = $docente->getap1();

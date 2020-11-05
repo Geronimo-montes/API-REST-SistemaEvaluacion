@@ -2,7 +2,7 @@
     class AlumnoEntity{
         
         protected $idAlumno;
-        protected $nombreEscuela;
+        protected $idEscuela;
         protected $nombre;
         protected $ap1;
         protected $ap2;
@@ -19,45 +19,26 @@
         protected $estatus;
 
         public function __construct (array $data){
-            if(isset($data['idAlumno'])){
-                $this->idAlumno = $data['idAlumno'];
-                $this->nombreEscuela = $data['nombreEscuela'];
-                $this->nombre = $data['nombre'];
-                $this->ap1 = $data['ap1'];
-                $this->ap2 = $data['ap2'];
-                $this->curp = $data['curp'];
-                $this->grupo = $data['grupo'];
-                $this->grado = $data['grado'];
-                $this->turno = $data['turno'];
-                $this->nombreTutor = $data['nombreTutor'];
-                $this->direccion = $data['direccion'];
-                $this->telefono = $data['telefono'];
-                $this->email = $data['email'];
-                $this->facebook = $data['facebook'];
-                $this->preferennciaContacto = $data['preferennciaContacto'];
-                $this->estatus = $data['estatus'];
-            }else{
-                $this->idAlumno = NULL;
-                $this->nombreEscuela = NULL;
-                $this->nombre = NULL;
-                $this->ap1 = NULL;
-                $this->ap2 = NULL;
-                $this->curp = NULL;
-                $this->grupo = NULL;
-                $this->grado = NULL;
-                $this->turno = NULL;
-                $this->nombreTutor = NULL;
-                $this->direccion = NULL;
-                $this->telefono = NULL;
-                $this->email = NULL;
-                $this->facebook = NULL;
-                $this->preferennciaContacto = NULL;
-                $this->estatus = NULL;
-            }
+            (isset($data['idAlumno'])) ?  $this->idAlumno = $data['idAlumno'] : $this->idAlumno = NULL;
+            (isset($data['idEscuela'])) ?  $this->idEscuela = $data['idEscuela'] : $this->idEscuela = NULL;
+            (isset($data['nombre'])) ?  $this->nombre = $data['nombre'] : $this->nombre = NULL;
+            (isset($data['ap1'])) ?  $this->ap1 = $data['ap1'] : $this->ap1 = NULL;
+            (isset($data['ap2'])) ?  $this->ap2 = $data['ap2'] : $this->ap2 = NULL;
+            (isset($data['curp'])) ?  $this->curp = $data['curp'] : $this->curp = NULL;
+            (isset($data['grupo'])) ?  $this->grupo = $data['grupo'] : $this->grupo = NULL;
+            (isset($data['grado'])) ?  $this->grado = $data['grado'] : $this->grado = NULL;
+            (isset($data['turno'])) ?  $this->turno = $data['turno'] : $this->turno = NULL;
+            (isset($data['nombreTutor'])) ?  $this->nombreTutor = $data['nombreTutor'] : $this->nombreTutor = NULL;
+            (isset($data['direccion'])) ?  $this->direccion = $data['direccion'] : $this->direccion = NULL;
+            (isset($data['telefono'])) ?  $this->telefono = $data['telefono'] : $this->telefono = NULL;
+            (isset($data['email'])) ?  $this->email = $data['email'] : $this->email = NULL;
+            (isset($data['facebook'])) ?  $this->facebook = $data['facebook'] : $this->facebook = NULL;
+            (isset($data['preferennciaContacto'])) ?  $this->preferennciaContacto = $data['preferennciaContacto'] : $this->preferennciaContacto = NULL;
+            (isset($data['estatus'])) ?  $this->estatus = $data['estatus'] : $this->estatus = NULL;
         }
 
         public function getidAlumno(){ return $this->idAlumno; }
-        public function getnombreEscuela(){ return $this->nombreEscuela; }
+        public function getidEscuela(){ return $this->idEscuela; }
         public function getnombre(){ return $this->nombre; }
         public function getap1(){ return $this->ap1; }
         public function getap2(){ return $this->ap2; }

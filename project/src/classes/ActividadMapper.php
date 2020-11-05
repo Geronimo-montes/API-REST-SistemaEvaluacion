@@ -1,12 +1,30 @@
 <?php 
     class ActividadMapper extends Mapper{
+        private function generarArray ($data){
+            $array = [];
+            foreach ($data as $actividad) {
+                array_push($array, array(
+                    "idPlanTrabajo" => $actividad->getidPlanTrabajo(),
+                    "idAprendizajeEsperado" => $actividad->getidAprendizajeEsperado(),
+                    "idAreaFormacion"   => $actividad->getidAreaFormacion(),
+                    "idDocente" => $actividad->getidDocente(),
+                    "idDiagnostico" => $actividad->getidDiagnostico(),
+                    "nombre"    => $actividad->getnombre(),
+                    "duracionMinutos"   => $actividad->getduracionMinutos(),
+                    "tipoActividad" => $actividad->gettipoActividad(),
+                    "inicio"    => $actividad->getinicio(),
+                    "desarrollo"    => $actividad->getdesarrollo(),
+                    "cierre"    => $actividad->getcierre(),
+                    "recursos"  => $actividad->getrecursos(),
+                    "evaluacion"    => $actividad->getevaluacion(),
+                    "fechaModificacion" => $actividad->getfechaModificacion(),
+                    "estatus"   => $actividad->getestatus()
+                ));
+            }
+            return $array;
+        }
         
-        public function InsertActividad (ActividadEntity $actividad)
-        /**************************************************************************
-        * Parametros:	entidad actividad
-        * Proposito:	insertar una nueva actividad
-        * Return:		true flase
-        **************************************************************************/{
+        public function InsertActividad (ActividadEntity $actividad){
             $sql = "INSERT INTO planTrabajo (idAprendizajeEsperado, idAreaFormacion, idDocente, idDiagnostico, nombre, duracionMinutos, tipoActividad, inicio, desarrollo, cierre, recursos, evaluacion, fechaModificacion, estatus) 
             VALUES
             (
@@ -61,86 +79,27 @@
             }
         }
 
-        public function getActividades ()
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	listar activiades 
-        * Return:		array
-        **************************************************************************/{
-            $sql = "SELECT   
-                    idPlanTrabajo,
-                    idAprendizajeEsperado,
-                    idAreaFormacion,
-                    idDocente,
-                    idDiagnostico,
-                    nombre,
-                    duracionMinutos,
-                    tipoActividad,
-                    inicio,
-                    desarrollo,
-                    cierre,
-                    recursos,
-                    evaluacion,
-                    fechaModificacion,
-                    estatus
-                FROM planTrabajo pt
-                WHERE estatus = 'a'"
-            ;
-
+        public function getActividades (){
+            $sql = "SELECT * FROM planTrabajo pt WHERE estatus = 'a'";
             $stmt = $this->db->query($sql);
-
             $results = [];
-            while ($row = $stmt->fetch()){
-                $results[] = new ActividadEntity($row);
-            }
-
-            return $results;
+            while ($row = $stmt->fetch()){ $results[] = new ActividadEntity($row); }
+            return $this->generarArray( $results );
         }
 
-        public function getActividadById ($id)
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	listar activiades 
-        * Return:		array
-        **************************************************************************/{
-            $sql = "SELECT   
-                    idPlanTrabajo,
-                    idAprendizajeEsperado,
-                    idAreaFormacion,
-                    idDocente,
-                    idDiagnostico,
-                    nombre,
-                    duracionMinutos,
-                    tipoActividad,
-                    inicio,
-                    desarrollo,
-                    cierre,
-                    recursos,
-                    evaluacion,
-                    fechaModificacion,
-                    estatus
-                FROM planTrabajo
-                WHERE idPlanTrabajo = :idPlanTrabajo"
-            ;
-
+        public function getActividadById ($id){
+            $sql = "SELECT * FROM planTrabajo WHERE idPlanTrabajo = :idPlanTrabajo";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(":idPlanTrabajo", $id, PDO::PARAM_INT);
 
             if($stmt->execute()){
                 $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new ActividadEntity($results);
+                while ($row = $stmt->fetch()){ $results[] = new ActividadEntity($row); }
+                return $this->generarArray( $results );
             }
         }
 
-        public function UpdateActividadById (ActividadEntity $actividad)
-        /**************************************************************************
-        * Parametros:	Objeto del tupo ActividadEntity
-        * Proposito:	Actualizar sus datos
-        * Return:		array
-        **************************************************************************/{
+        public function UpdateActividadById (ActividadEntity $actividad){
             $sql = "UPDATE planTrabajo SET   
                     idAprendizajeEsperado   = :idAprendizajeEsperado,
                     idAreaFormacion         = :idAreaFormacion,

@@ -1,11 +1,24 @@
 <?php 
     class ActividadProgramadaMapper extends Mapper{
-        public function getActividadProgramada ()
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	Listar todas las actividades con estatus activa
-        * Return:		array
-        **************************************************************************/{
+        private function generarArray ($data){
+            $array = [];
+            foreach ($data as $actividad) {
+                array_push($array, array(
+                    "idActividadProgramada" => $actividad->getidActividadProgramada(),
+                    "idPlanTrabajo" => $actividad->getidPlanTrabajo(),
+                    "idNivelDesempeno" => $actividad->getidNivelDesempeno(),
+                    "idPeriodoEvaluacion" => $actividad->getidPeriodoEvaluacion(),
+                    "idCicloEscolar" => $actividad->getidCicloEscolar(),
+                    "nivelDesempenoPonderado" => $actividad->getnivelDesempenoPonderado(),
+                    "observacion" => $actividad->getobservacion(),
+                    "fecha" => $actividad->getfecha(),
+                    "estatus" => $actividad->getestatus()
+                ));
+            }
+            return $array;
+        }
+
+        public function getActividadProgramada (){
             $sql = "SELECT * FROM actividadProgramada";
             
             $stmt = $this->db->query($sql);
@@ -15,15 +28,10 @@
                 $results[] = new ActividadProgramadaEntity($row);
             }
 
-            return $results;
+            return $this->generarArray( $results );
         }
 
-        public function getActividadProgramadaById ($id)
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	Listar todas las actividades con estatus activa
-        * Return:		array
-        **************************************************************************/{
+        public function getActividadProgramadaById ($id){
             $sql = "SELECT * FROM actividadProgramada WHERE idActividadProgramada = :idActividadProgramada";
             
             $stmt = $this->db->prepare($sql);
@@ -31,19 +39,15 @@
 
             if($stmt->execute()){
                 $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new ActividadProgramadaEntity($results);
+                while ($row = $stmt->fetch()){
+                    $results[] = new ActividadProgramadaEntity($row);
+                }
+    
+                return $this->generarArray( $results );
             }
         }
 
-        public function getActividadProgramadaByPeriodo ($periodo)
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	
-        * Return:		array
-        **************************************************************************/{
+        public function getActividadProgramadaByPeriodo ($periodo){
             $sql = "SELECT * FROM actividadProgramada WHERE idPeriodoEvaluacion = :idPeriodoEvaluacion";
             
             $stmt = $this->db->prepare($sql);
@@ -51,19 +55,15 @@
 
             if($stmt->execute()){
                 $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new ActividadProgramadaEntity($results);
+                while ($row = $stmt->fetch()){
+                    $results[] = new ActividadProgramadaEntity($row);
+                }
+    
+                return $this->generarArray( $results );
             }
         }
 
-        public function getActividadProgramadaByEstatus ($estatus)
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	
-        * Return:		array
-        **************************************************************************/{
+        public function getActividadProgramadaByEstatus ($estatus){
             $sql = "SELECT * FROM actividadProgramada WHERE estatus = :estatus";
             
             $stmt = $this->db->prepare($sql);
@@ -71,19 +71,15 @@
 
             if($stmt->execute()){
                 $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new ActividadProgramadaEntity($results);
+                while ($row = $stmt->fetch()){
+                    $results[] = new ActividadProgramadaEntity($row);
+                }
+    
+                return $this->generarArray( $results );
             }
         }
 
-        public function getActividadProgramadaByPeriodoEstatus ($periodo, $estatus)
-        /**************************************************************************
-        * Parametros:	
-        * Proposito:	
-        * Return:		array
-        **************************************************************************/{
+        public function getActividadProgramadaByPeriodoEstatus ($periodo, $estatus){
             $sql = "SELECT * FROM actividadProgramada WHERE estatus = :estatus AND idPeriodoEvaluacion = :idPeriodoEvaluacion";
             
             $stmt = $this->db->prepare($sql);
@@ -92,19 +88,15 @@
 
             if($stmt->execute()){
                 $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new ActividadProgramadaEntity($results);
+                while ($row = $stmt->fetch()){
+                    $results[] = new ActividadProgramadaEntity($row);
+                }
+    
+                return $this->generarArray( $results );
             }
         }
 
-        public function updateActividadProgramada (ActividadProgramadaEntity $actividad)
-        /**************************************************************************
-        * Parametros:	Objeto tipo AcividadProgramadaEntity: contiene tidos los campos
-        * Proposito:	Actualizar los campos de la base de datos
-        * Return:		array
-        **************************************************************************/{
+        public function updateActividadProgramada (ActividadProgramadaEntity $actividad){
             $sql = "UPDATE actividadProgramada SET
                 idPlanTrabajo = :idPlanTrabajo,
                 idNivelDesempeno = :idNivelDesempeno,
@@ -141,16 +133,12 @@
             }
         }
 
-        public function insertActividadProgramada (ActividadProgramadaEntity $actividad)
-        /**************************************************************************
-        * Parametros:	objeto tipo actividadprogramadaentity que contiene las caracteristicas a intestar
-        * Proposito:	insertar un nueva actividad programada
-        * Return:		true false
-        **************************************************************************/{
-            $sql = "INSERT INTO actividadProgramada (idPlanTrabajo, idNivelDesempeno, idPeriodoEvaluacion, nivelDesempenoPonderado, observacion, fecha, estatus) VALUES (
+        public function insertActividadProgramada (ActividadProgramadaEntity $actividad){
+            $sql = "INSERT INTO actividadProgramada (idPlanTrabajo, idNivelDesempeno, idPeriodoEvaluacion, idCicloEscolar, nivelDesempenoPonderado, observacion, fecha, estatus) VALUES (
                     :idPlanTrabajo,
                     :idNivelDesempeno,
                     :idPeriodoEvaluacion,
+                    (SELECT idCicloEscolar from cicloescolar WHERE estatus = 'a'),
                     0,
                     :observacion,
                     now(),
