@@ -1,10 +1,7 @@
 <?php 
     class ActividadEntity{
         protected $idPlanTrabajo;
-        protected $idAprendizajeEsperado;
-        protected $idAreaFormacion;
         protected $idDocente;
-        protected $idDiagnostico;
         protected $nombre;
         protected $duracionMinutos;
         protected $tipoActividad;
@@ -18,10 +15,7 @@
 
         public function __construct(array $data){
             (isset($data['idPlanTrabajo']))         ? $this->idPlanTrabajo         = $data['idPlanTrabajo']         : $this->idPlanTrabajo = NULL;
-            (isset($data['idAprendizajeEsperado'])) ? $this->idAprendizajeEsperado = $data['idAprendizajeEsperado'] : $this->idAprendizajeEsperado = NULL;
-            (isset($data['idAreaFormacion']))       ? $this->idAreaFormacion       = $data['idAreaFormacion']       : $this->idAreaFormacion = NULL;
             (isset($data['idDocente']))             ? $this->idDocente             = $data['idDocente']             : $this->idDocente = NULL;
-            (isset($data['idDiagnostico']))         ? $this->idDiagnostico         = $data['idDiagnostico']         : $this->idDiagnostico = NULL;
             (isset($data['nombre']))                ? $this->nombre                = $data['nombre']                : $this->nombre = NULL;
             (isset($data['duracionMinutos']))       ? $this->duracionMinutos       = $data['duracionMinutos']       : $this->duracionMinutos = NULL;
             (isset($data['tipoActividad']))         ? $this->tipoActividad         = $data['tipoActividad']         : $this->tipoActividad = NULL;
@@ -35,10 +29,7 @@
         }
 
         public function getidPlanTrabajo()         { return $this->idPlanTrabajo; }
-        public function getidAprendizajeEsperado() { return $this->idAprendizajeEsperado; }
-        public function getidAreaFormacion()       { return $this->idAreaFormacion; }
         public function getidDocente()             { return $this->idDocente; }
-        public function getidDiagnostico()         { return $this->idDiagnostico; }
         public function getnombre()                { return $this->nombre; }
         public function getduracionMinutos()       { return $this->duracionMinutos; }
         public function gettipoActividad()         { return $this->tipoActividad; }
@@ -49,6 +40,5 @@
         public function getevaluacion()            { return $this->evaluacion; }
         public function getfechaModificacion()     { return $this->fechaModificacion; }
         public function getestatus()               { return $this->estatus; }
-        
     }
 ?>

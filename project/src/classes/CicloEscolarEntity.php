@@ -1,6 +1,7 @@
 <?php 
     class CicloEscolarEntity {
         protected $idCicloEscolar;
+        protected $nombre;
         protected $inicioCiclo;
         protected $finCiclo;
         protected $diasHabiles;
@@ -8,6 +9,7 @@
         
         public function __construct(array $data){
             (isset($data{'idCicloEscolar'})) ? $this->idCicloEscolar = $data['idCicloEscolar'] : $this->idCicloEscolar = NULL;
+            (isset($data{'nombre'})) ? $this->nombre = $data['nombre'] : $this->nombre = NULL;
             (isset($data{'inicioCiclo'})) ? $this->inicioCiclo = $data['inicioCiclo'] : $this->inicioCiclo = NULL;
             (isset($data{'finCiclo'})) ? $this->finCiclo = $data['finCiclo'] : $this->finCiclo = NULL;
             (isset($data{'diasHabiles'})) ? $this->diasHabiles = $data['diasHabiles'] : $this->diasHabiles = NULL;
@@ -15,6 +17,7 @@
         }
 
         public function getidCicloEscolar() { return $this->idCicloEscolar; }
+        public function getnombre() { return $this->nombre; }
         public function getinicioCiclo() { return $this->inicioCiclo; }
         public function getfinCiclo() { return $this->finCiclo; }
         public function getdiasHabiles() { return $this->diasHabiles; }

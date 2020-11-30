@@ -19,7 +19,8 @@
                     "email"                 => $alumno->getemail(),
                     "facebook"              => $alumno->getfacebook(),
                     "preferennciaContacto"  => $alumno->getpreferennciaContacto(),
-                    "estatus"               => $alumno->getestatus()
+                    "estatus"               => $alumno->getestatus(),
+                    "rutaExpediente"        => $alumno->getrutaExpediente()
                 ));
             }
             return $array;
@@ -75,7 +76,7 @@
                     email = :email,
                     facebook = :facebook,
                     preferennciaContacto = :preferennciaContacto,
-                    estatus = :estatus
+                    estatus = :estatus                   
                     WHERE idAlumno = :idAlumno"
             ;
             
@@ -135,7 +136,8 @@
                 :email,
                 :facebook,
                 :preferennciaContacto,
-                'a'
+                'a',
+                :rutaExpediente
             );";
             
             $stmt = $this->db->prepare($sql);
@@ -154,6 +156,7 @@
             $email                  = $alumno->getemail();
             $facebook               = $alumno->getfacebook();
             $preferennciaContacto   = $alumno->getpreferennciaContacto();
+            $rutaExpediente         = $alumno->getrutaExpediente() . "/" . $idAlumno;
 
             $stmt->bindParam(":idAlumno", $idAlumno, PDO::PARAM_INT);
             $stmt->bindParam(":nombre", $nombre, PDO::PARAM_STR, 50);
@@ -169,9 +172,11 @@
             $stmt->bindParam(":email", $email, PDO::PARAM_STR, 80);
             $stmt->bindParam(":facebook", $facebook, PDO::PARAM_STR, 50);
             $stmt->bindParam(":preferennciaContacto", $preferennciaContacto, PDO::PARAM_STR, 50);
+            $stmt->bindParam(":rutaExpediente", $rutaExpediente, PDO::PARAM_STR, 200);
     
             if($stmt->execute()){
-                return "exito en la insercion";
+                if(mkdir($rutaExpediente))
+                    return "exito en la insercion";
             }
         }
     }

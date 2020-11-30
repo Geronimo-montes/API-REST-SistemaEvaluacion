@@ -17,6 +17,7 @@
         protected $facebook;
         protected $preferennciaContacto;
         protected $estatus;
+        protected $rutaExpediente;
 
         public function __construct (array $data){
             (isset($data['idAlumno'])) ?  $this->idAlumno = $data['idAlumno'] : $this->idAlumno = NULL;
@@ -35,6 +36,7 @@
             (isset($data['facebook'])) ?  $this->facebook = $data['facebook'] : $this->facebook = NULL;
             (isset($data['preferennciaContacto'])) ?  $this->preferennciaContacto = $data['preferennciaContacto'] : $this->preferennciaContacto = NULL;
             (isset($data['estatus'])) ?  $this->estatus = $data['estatus'] : $this->estatus = NULL;
+            (isset($data['rutaExpediente']))        ? $this->rutaExpediente        = $data['rutaExpediente']        : $this->rutaExpediente = NULL;
         }
 
         public function getidAlumno(){ return $this->idAlumno; }
@@ -53,5 +55,6 @@
         public function getfacebook(){ return $this->facebook; }
         public function getpreferennciaContacto(){ return $this->preferennciaContacto; }
         public function getestatus(){ return $this->estatus; }
+        public function getrutaExpediente()        { return $this->rutaExpediente; }   
     }
 ?>

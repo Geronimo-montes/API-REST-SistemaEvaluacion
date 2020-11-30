@@ -5,7 +5,7 @@
             foreach ($data as $docente) {
                 array_push($array, array(
                     "idDocente"     => $docente->getidDocente(),
-                    "idEscuela" => $docente->getidEscuela(),
+                    "idEscuela"     => $docente->getidEscuela(),
                     "nombre"        => $docente->getnombre(),
                     "ap1"           => $docente->getap1(),
                     "ap2"           => $docente->getap2(),
@@ -60,7 +60,6 @@
                     rfc = :rfc, 
                     direccion = :direccion, 
                     telefono = :telefono, 
-                    email = :email, 
                     facebook = :facebook, 
                     grupo = :grupo, 
                     grado = :grado, 
@@ -78,7 +77,6 @@
             $rfc        = $docente->getrfc();
             $direccion  = $docente->getdireccion();
             $telefono   = $docente->gettelefono();
-            $email      = $docente->getemail();
             $facebook   = $docente->getfacebook();
             $grupo      = $docente->getgrupo();
             $grado      = $docente->getgrado();
@@ -94,7 +92,6 @@
             $stmt->bindParam(":rfc",        $rfc, PDO::PARAM_STR, 13);
             $stmt->bindParam(":direccion",  $direccion, PDO::PARAM_STR, 100);
             $stmt->bindParam(":telefono",   $telefono, PDO::PARAM_STR, 10);
-            $stmt->bindParam(":email",      $email, PDO::PARAM_STR, 80);
             $stmt->bindParam(":facebook",   $facebook, PDO::PARAM_STR, 50);
             $stmt->bindParam(":grupo",      $grupo, PDO::PARAM_STR, 1);
             $stmt->bindParam(":grado",      $grado, PDO::PARAM_STR, 1);
@@ -106,6 +103,85 @@
             if($stmt->execute()){
                 return $this->getDocenteById($docente->getidDocente());
             }
+        }
+
+        /**Auntenticacion del usuario*/
+        public function logIn($data) {/** */
+            $sql = "SELECT idDocente FROM docente WHERE email = :email AND contraseña = :password";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(":email", $data['email'], PDO::PARAM_STR, 80);
+            $stmt->bindParam(":password", $data['password'], PDO::PARAM_STR, 20);
+            $results = NULL;            
+            if($stmt->execute())
+                while ($row = $stmt->fetch()){
+                    $results = $row['idDocente'];
+                }    
+
+            return $results;
+        }
+
+        public  function updateUserById ($data){
+            $sql = "UPDATE docente SET 
+                    email = :email,
+                    contraseña = :password 
+                    WHERE idDocente = :idDocente";
+
+            $stmt = $this->db->prepare($sql);
+
+
+            $stmt->bindParam(":email", $data['email'], PDO::PARAM_STR, 80);
+            $stmt->bindParam(":password", $data['password'], PDO::PARAM_STR, 20);
+            $stmt->bindParam(":idDocente",  $data['idDocente'], PDO::PARAM_INT);
+            $res = false;
+
+            if($stmt->execute())
+                if($stmt->rowCount() > 0)
+                    $res = !$res;
+            
+            return $res;
+        }
+
+        public function logOut($data) {
+            $sql = "UPDATE docente SET 
+                    token = :token
+                    WHERE idDocente = :idDocente";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(":token", NULL, PDO::PARAM_NULL);
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public function insertToken($data) {/** */
+            $sql = "UPDATE docente SET 
+                    token = :token
+                    WHERE idDocente = :idDocente";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(":token",      $data['token'], PDO::PARAM_STR, 215);
+            $stmt->bindParam(":idDocente",  $data['id'],    PDO::PARAM_INT);
+
+            if($stmt->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public function validarToken($data) {
+            $sql = "SELECT idDocente FROM docente WHERE token = :token";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(":token", $data, PDO::PARAM_STR, 215);
+            $results = NULL;            
+            if($stmt->execute())
+                while ($row = $stmt->fetch()){
+                    $results = $row['idDocente'];
+                }    
+                
+            return $results;
         }
     }
 ?>  

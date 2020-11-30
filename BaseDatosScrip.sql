@@ -20,12 +20,14 @@ CREATE TABLE docente (
     rfc varchar(13) UNIQUE,
     direccion varchar(100) NOT NULL,
     telefono varchar(10) NOT NULL,
-    email varchar(80) NOT NULL,
     facebook varchar(50) NOT NULL,
     grupo varchar(1) NOT NULL,
     grado varchar(1) NOT NULL,
     turno varchar(1) NOT NULL,
     rol varchar(50) NOT NULL,
+    email varchar(80) NOT NULL UNIQUE,
+    contraseña varchar(20) NOT NULL,
+    token varchar(215) DEFAULT NULL,
     estatus varchar(1) NOT NULL,
 
     FOREIGN KEY (idEscuela) REFERENCES escuela (idEscuela)
@@ -100,34 +102,8 @@ INSERT INTO areaFormacion VALUES (4, "Lengua Extranjera", "a");
 INSERT INTO areaFormacion VALUES (5, "Artes", "a");
 INSERT INTO areaFormacion VALUES (6, "Educacion Fisica", "a");
 
-CREATE TABLE diagnostico (
-    idDiagnostico tinyint PRIMARY KEY,
-    idAreaFormacion tinyint,
-    descripcion varchar(300) NOT NULL,
-    estatus varchar(1) NOT NULL,
-
-    FOREIGN KEY (idAreaFormacion) REFERENCES areaFormacion (idAreaFormacion)
-
-) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci;
-
-INSERT INTO diagnostico VALUES (1,  1, "Reconoce su nombre", "a");
-INSERT INTO diagnostico VALUES (2,  1, "Reproduce graficamento su nombre", "a");
-INSERT INTO diagnostico VALUES (3,  1, "Escribe su nombre con diversos propositos", "a");
-INSERT INTO diagnostico VALUES (4,  1, "Sabe como se llama y lo menciona", "a");
-INSERT INTO diagnostico VALUES (5,  1, "Utiliza infromacion de nombres que conoce, datos sobre si mismo, del lugar donde vive y de su familia", "a");
-INSERT INTO diagnostico VALUES (6,  1, "Narra sucesos reales o imaginarios", "a");
-INSERT INTO diagnostico VALUES (7,  1, "Utiliza el lenguaje para construir ideas mas completas, secuenciadas y precisas", "a");
-INSERT INTO diagnostico VALUES (8,  1, "Evoca y explica activadades que ha relizado haciendo referencias espaciales y temporales", "a");
-INSERT INTO diagnostico VALUES (9,  1, "Solicita y proporciona ayudada para llevar a cabo diferentes tareas", "a");
-INSERT INTO diagnostico VALUES (10, 1, "Solicita la palabra levantando la mano", "a");
-INSERT INTO diagnostico VALUES (11, 1, "Respeta el turno de los demas", "a");
-INSERT INTO diagnostico VALUES (12, 1, "Narra anecdotas, cuentos, leyendas y fabulas siguiendo la secuencia de sucesos", "a");
-INSERT INTO diagnostico VALUES (13, 1, "Identifica el contenido de un texto al mostrarle un libro con solo observar las imagenes", "a");
-INSERT INTO diagnostico VALUES (14, 1, "Pregunta palabras que no entiende al escuchar fracmentos de una lectura", "a");
-INSERT INTO diagnostico VALUES (15, 1, "Utiliza marcas graficas y explica que dice su texto", "a");
-
 CREATE TABLE aprendizajeEsperado (
-    idAprendizajeEsperado tinyint PRIMARY KEY AUTO_INCREMENT,
+    idAprendizajeEsperado int PRIMARY KEY AUTO_INCREMENT,
     idAreaFormacion tinyint,
     descripcion varchar(300) NOT NULL,
     estatus varchar(1) NOT NULL,
@@ -170,11 +146,8 @@ INSERT INTO aprendizajeEsperado VALUES (31, 1, "Produce textos parainformar algo
 
 CREATE TABLE planTrabajo (
     idPlanTrabajo int PRIMARY KEY AUTO_INCREMENT,
-    idAprendizajeEsperado tinyint NOT NULL, /*fk*/
-    idAreaFormacion tinyint NOT NULL,/*fk*/
     idDocente int NOT NULL,/*fk*/
-    idDiagnostico tinyint, /*fk*/
-    nombre varchar(50) NOT NULL,
+    nombre varchar(200) NOT NULL,
     duracionMinutos tinyint NOT NULL,
     tipoActividad varchar(1) NOT NULL,
     inicio varchar(2000) NOT NULL,
@@ -185,11 +158,53 @@ CREATE TABLE planTrabajo (
     fechaModificacion date NOT NULL,
     estatus varchar(1) NOT NULL DEFAULT 'a',
 
-    FOREIGN KEY (idAprendizajeEsperado) REFERENCES aprendizajeEsperado (idAprendizajeEsperado),
-    FOREIGN KEY (idAreaFormacion) REFERENCES areaFormacion (idAreaFormacion),
-    FOREIGN KEY (idDocente) REFERENCES docente (idDocente),
-    FOREIGN KEY (idDiagnostico) REFERENCES diagnostico (idDiagnostico)
+    FOREIGN KEY (idDocente) REFERENCES docente (idDocente)
+) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
+CREATE TABLE diagnostico (
+    idDiagnostico tinyint PRIMARY KEY,
+    idAreaFormacion tinyint,
+    descripcion varchar(300) NOT NULL,
+    estatus varchar(1) NOT NULL,
+
+    FOREIGN KEY (idAreaFormacion) REFERENCES areaFormacion (idAreaFormacion)
+
+) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci;
+
+INSERT INTO diagnostico VALUES (1,  1, "Reconoce su nombre", "a");
+INSERT INTO diagnostico VALUES (2,  1, "Reproduce graficamento su nombre", "a");
+INSERT INTO diagnostico VALUES (3,  1, "Escribe su nombre con diversos propositos", "a");
+INSERT INTO diagnostico VALUES (4,  1, "Sabe como se llama y lo menciona", "a");
+INSERT INTO diagnostico VALUES (5,  1, "Utiliza infromacion de nombres que conoce, datos sobre si mismo, del lugar donde vive y de su familia", "a");
+INSERT INTO diagnostico VALUES (6,  1, "Narra sucesos reales o imaginarios", "a");
+INSERT INTO diagnostico VALUES (7,  1, "Utiliza el lenguaje para construir ideas mas completas, secuenciadas y precisas", "a");
+INSERT INTO diagnostico VALUES (8,  1, "Evoca y explica activadades que ha relizado haciendo referencias espaciales y temporales", "a");
+INSERT INTO diagnostico VALUES (9,  1, "Solicita y proporciona ayudada para llevar a cabo diferentes tareas", "a");
+INSERT INTO diagnostico VALUES (10, 1, "Solicita la palabra levantando la mano", "a");
+INSERT INTO diagnostico VALUES (11, 1, "Respeta el turno de los demas", "a");
+INSERT INTO diagnostico VALUES (12, 1, "Narra anecdotas, cuentos, leyendas y fabulas siguiendo la secuencia de sucesos", "a");
+INSERT INTO diagnostico VALUES (13, 1, "Identifica el contenido de un texto al mostrarle un libro con solo observar las imagenes", "a");
+INSERT INTO diagnostico VALUES (14, 1, "Pregunta palabras que no entiende al escuchar fracmentos de una lectura", "a");
+INSERT INTO diagnostico VALUES (15, 1, "Utiliza marcas graficas y explica que dice su texto", "a");
+
+CREATE TABLE planTrabajo_diagnostico (
+    idDiagnostico tinyint,
+    idPlanTrabajo int,
+
+    PRIMARY KEY (idDiagnostico, idPlanTrabajo),
+
+    FOREIGN KEY (idDiagnostico) REFERENCES diagnostico (idDiagnostico),
+    FOREIGN KEY (idPlanTrabajo) REFERENCES planTrabajo (idPlanTrabajo)
+) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
+
+CREATE TABLE planTrabajo_aprendizajeEsperado (
+    idAprendizajeEsperado int,
+    idPlanTrabajo int,
+
+    PRIMARY KEY (idAprendizajeEsperado, idPlanTrabajo),
+
+    FOREIGN KEY (idAprendizajeEsperado) REFERENCES aprendizajeEsperado (idAprendizajeEsperado),
+    FOREIGN KEY (idPlanTrabajo) REFERENCES planTrabajo (idPlanTrabajo)
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci; 
 
 CREATE TABLE evidencias (
@@ -207,13 +222,14 @@ CREATE TABLE evidencias (
 
 CREATE TABLE cicloEscolar (
   idCicloEscolar int PRIMARY KEY AUTO_INCREMENT,
+  nombre varchar(50) UNIQUE,
   inicioCiclo date,
   finCiclo date,
   diasHabiles smallint,
   estatus varchar(1)
 )ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci;
 
-INSERT INTO cicloEscolar (inicioCiclo, finCiclo, diasHabiles, estatus) VALUES ("24-08-20", "09-07-21", 191, "a");
+INSERT INTO cicloEscolar (nombre, inicioCiclo, finCiclo, diasHabiles, estatus) VALUES ("Ciclo 2020-2021", "20-08-24", "21-07-09", 191, "a");
 
 
 CREATE TABLE actividadProgramada (
@@ -258,7 +274,7 @@ CREATE TABLE evaluacion (
     observacion varchar(500) NOT NULL,
     estatus varchar(1) NOT NULL,
 
-    PRIMARY KEY (idEvaluacion, idAlumno, idAreaFormacion, idPeriodoEvaluacion),
+    PRIMARY KEY (idAlumno, idAreaFormacion, idPeriodoEvaluacion),
 
     FOREIGN KEY (idAlumno) REFERENCES alumno (idAlumno),
     FOREIGN KEY (idAreaFormacion) REFERENCES areaFormacion (idAreaFormacion),
@@ -278,3 +294,15 @@ CREATE TABLE cuadroHonor (
     FOREIGN KEY (idActividadProgramada) REFERENCES actividadProgramada (idActividadProgramada)
 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci;
+
+CREATE TABLE usuarios_login(
+    idDocente int,
+    usuario varchar(30) PRIMARY KEY,
+    contrasena varchar(40),
+    metodo enum('texto', 'sha1', 'md5'),
+    token varchar(8),
+    expiracionToken date,
+    estatus varchar(1),
+
+    FOREIGN KEY (idDocente) REFERENCES docente (idDocente)
+);

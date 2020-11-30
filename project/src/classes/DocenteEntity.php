@@ -10,12 +10,12 @@
         protected $rfc;
         protected $direccion;
         protected $telefono;
-        protected $email;
         protected $facebook;
         protected $grupo;
         protected $grado;
         protected $turno;
         protected $rol;
+        protected $email;
         protected $estatus;
 
         public function __construct(array $data){
@@ -28,12 +28,12 @@
             (isset($data['rfc'])) ? $this->rfc = $data['rfc'] : $this->rfc = NULL;
             (isset($data['direccion'])) ? $this->direccion = $data['direccion'] : $this->direccion = NULL;
             (isset($data['telefono'])) ? $this->telefono = $data['telefono'] : $this->telefono = NULL;
-            (isset($data['email'])) ? $this->email = $data['email'] : $this->email = NULL;
             (isset($data['facebook'])) ? $this->facebook = $data['facebook'] : $this->facebook = NULL;
             (isset($data['grupo'])) ? $this->grupo = $data['grupo'] : $this->grupo = NULL;
             (isset($data['grado'])) ? $this->grado = $data['grado'] : $this->grado = NULL;
             (isset($data['turno'])) ? $this->turno = $data['turno'] : $this->turno = NULL;
             (isset($data['rol'])) ? $this->rol = $data['rol'] : $this->rol = NULL;
+            (isset($data['email'])) ? $this->email = $data['email'] : $this->email = NULL;
             (isset($data['estatus'])) ? $this->estatus = $data['estatus'] : $this->estatus = NULL;
         }
 

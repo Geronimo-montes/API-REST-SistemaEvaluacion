@@ -26,7 +26,8 @@
         }
 
         public function insertCicloEscolar (CicloEscolarEntity $ciclo) {
-            $sql = "INSERT INTO cicloEscolar (inicioCiclo, finCiclo, diasHabiles, estatus) VALUES (
+            $sql = "INSERT INTO cicloEscolar (nombre, inicioCiclo, finCiclo, diasHabiles, estatus) VALUES (
+                :nombre,
                 :inicioCiclo,
                 :finCiclo,
                 :diasHabiles,
@@ -35,10 +36,12 @@
 
             $stmt = $this->db->prepare($sql);
 
+            $nombre = $ciclo->getnombre();
             $inicioCiclo = $ciclo->getinicioCiclo();
             $finCiclo = $ciclo->getfinCiclo();
             $diasHabiles = $ciclo->getdiasHabiles();   
             
+            $stmt->bindParam(":nombre", $nombre, PDO::PARAM_STR, 50);
             $stmt->bindParam(":inicioCiclo", $inicioCiclo, PDO::PARAM_STR, 10);
             $stmt->bindParam(":finCiclo", $finCiclo, PDO::PARAM_STR, 10);
             $stmt->bindParam(":diasHabiles", $diasHabiles, PDO::PARAM_INT);
@@ -55,7 +58,8 @@
                 $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
                 if($stmt->execute()){
-                    return "exito en la insercion";
+                    if(mkdir($nombre))
+                        return "exito en la insercion";
                 }
             }
         }

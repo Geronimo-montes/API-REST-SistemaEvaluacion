@@ -5,10 +5,7 @@
             foreach ($data as $actividad) {
                 array_push($array, array(
                     "idPlanTrabajo" => $actividad->getidPlanTrabajo(),
-                    "idAprendizajeEsperado" => $actividad->getidAprendizajeEsperado(),
-                    "idAreaFormacion"   => $actividad->getidAreaFormacion(),
                     "idDocente" => $actividad->getidDocente(),
-                    "idDiagnostico" => $actividad->getidDiagnostico(),
                     "nombre"    => $actividad->getnombre(),
                     "duracionMinutos"   => $actividad->getduracionMinutos(),
                     "tipoActividad" => $actividad->gettipoActividad(),
@@ -25,13 +22,10 @@
         }
         
         public function InsertActividad (ActividadEntity $actividad){
-            $sql = "INSERT INTO planTrabajo (idAprendizajeEsperado, idAreaFormacion, idDocente, idDiagnostico, nombre, duracionMinutos, tipoActividad, inicio, desarrollo, cierre, recursos, evaluacion, fechaModificacion, estatus) 
+            $sql = "INSERT INTO planTrabajo (idDocente, nombre, duracionMinutos, tipoActividad, inicio, desarrollo, cierre, recursos, evaluacion, fechaModificacion, estatus) 
             VALUES
             (
-                :idAprendizajeEsperado,
-                :idAreaFormacion,
                 :idDocente,
-                :idDiagnostico,                
                 :nombre,
                 :duracionMinutos,
                 :tipoActividad,
@@ -46,10 +40,7 @@
 
             $stmt = $this->db->prepare($sql);
 
-            $idAprendizajeEsperado = $actividad->getidAprendizajeEsperado();
-            $idAreaFormacion       = $actividad->getidAreaFormacion();
             $idDocente             = $actividad->getidDocente();
-            $idDiagnostico         = $actividad->getidDiagnostico();
             $nombre                = $actividad->getnombre();
             $duracionMinutos       = $actividad->getduracionMinutos();
             $tipoActividad         = $actividad->gettipoActividad();
@@ -60,10 +51,7 @@
             $evaluacion            = $actividad->getevaluacion();
             //$fechaModificacion = $actividad->getfechaModificacion();
 
-            $stmt->bindParam(":idAprendizajeEsperado", $idAprendizajeEsperado, PDO::PARAM_INT);
-            $stmt->bindParam(":idAreaFormacion", $idAreaFormacion, PDO::PARAM_INT);
             $stmt->bindParam(":idDocente", $idDocente, PDO::PARAM_INT);
-            $stmt->bindParam(":idDiagnostico", $idDiagnostico, PDO::PARAM_INT);
             $stmt->bindParam(":nombre", $nombre, PDO::PARAM_STR, 50);
             $stmt->bindParam(":duracionMinutos", $duracionMinutos, PDO::PARAM_INT);
             $stmt->bindParam(":tipoActividad", $tipoActividad, PDO::PARAM_STR, 1);
@@ -101,10 +89,7 @@
 
         public function UpdateActividadById (ActividadEntity $actividad){
             $sql = "UPDATE planTrabajo SET   
-                    idAprendizajeEsperado   = :idAprendizajeEsperado,
-                    idAreaFormacion         = :idAreaFormacion,
                     idDocente               = :idDocente,
-                    idDiagnostico           = :idDiagnostico,
                     nombre                  = :nombre,
                     duracionMinutos         = :duracionMinutos,
                     tipoActividad           = :tipoActividad,
@@ -121,10 +106,7 @@
             $stmt = $this->db->prepare($sql);
 
             $idPlanTrabajo = $actividad->getidPlanTrabajo();
-            $idAprendizajeEsperado = $actividad->getidAprendizajeEsperado();
-            $idAreaFormacion = $actividad->getidAreaFormacion();
             $idDocente = $actividad->getidDocente();
-            $idDiagnostico = $actividad->getidDiagnostico();
             $nombre = $actividad->getnombre();
             $duracionMinutos = $actividad->getduracionMinutos();
             $tipoActividad = $actividad->gettipoActividad();
@@ -135,10 +117,7 @@
             $evaluacion = $actividad->getevaluacion();
             $estatus = $actividad->getestatus();
 
-            $stmt->bindParam(":idAprendizajeEsperado", $idAprendizajeEsperado, PDO::PARAM_INT);
-            $stmt->bindParam(":idAreaFormacion", $idAreaFormacion, PDO::PARAM_INT);
             $stmt->bindParam(":idDocente", $idDocente, PDO::PARAM_INT);
-            $stmt->bindParam(":idDiagnostico", $idDiagnostico, PDO::PARAM_INT);
             $stmt->bindParam(":nombre", $nombre, PDO::PARAM_STR);
             $stmt->bindParam(":duracionMinutos", $duracionMinutos, PDO::PARAM_STR);
             $stmt->bindParam(":tipoActividad", $tipoActividad, PDO::PARAM_STR);
