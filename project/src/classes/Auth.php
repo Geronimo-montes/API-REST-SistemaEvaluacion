@@ -1,7 +1,7 @@
 <?php
 use Firebase\JWT\JWT;
 
-class Auth extends Mapper {
+class Auth {
     private static $secret_key = 'Sdw1s9x8@';
     private static $encrypt = ['HS256'];
     private static $aud = null;
@@ -29,12 +29,12 @@ class Auth extends Mapper {
             throw new Exception("Invalid user logged in.");
     }
 
-    public static function GetData($token) {
+    public static function GetId($token) {
         return JWT::decode(
             $token,
             self::$secret_key,
             self::$encrypt
-        )->data;
+        )->id;
     }
 
     private static function Aud() {

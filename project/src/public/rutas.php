@@ -4,6 +4,7 @@
 /*******************************/
 
 /*********/
+/**Ya no sirve por lo menos no para lo que fue diseñado */
 $app->get('/escuela/{id}', function (Request $request, Response $response, $args) {
     try{
         $escuela = (int)$args['id'];
@@ -48,60 +49,6 @@ $app->get('/escuela/{id}', function (Request $request, Response $response, $args
         }
     });
 /****** */
-
-/**Rutas Docentes */
-    $app->get('/docentes', function (Request $request, Response $response) {
-        try{
-            $mapper = new DocenteMapper($this->db);
-            $listaDocente = $mapper->getDocentes();
-            return $response->withJson($listaDocente,200);
-        }catch (Exception $e){
-            return $response->withJson($e->getMessage(),200);
-        }
-    });
-    
-    $app->get('/docente/{id}', function (Request $request, Response $response, $args) {
-        try{
-            $idDocente = (int)$args['id'];
-            $mapper = new DocenteMapper($this->db);
-            $listaDocente = $mapper->getDocenteById($idDocente);
-            return $response->withJson($listaDocente,200);
-        }catch (Exception $e){
-            return $response->withJson($e->getMessage(),200);
-        }
-    });
-
-    $app->post('/docenteUpdate', function (Request $request, Response $response, $args) {
-        try{
-            $data = $request->getParsedBody();
-            $dataDocente = [];
-
-            $dataDocente['idDocente'] 		= filter_var($data['idDocente_docente'], 		FILTER_SANITIZE_NUMBER_INT);
-            $dataDocente['nombreEscuela'] 	= filter_var($data['nombreEscuela_docente'], 	FILTER_SANITIZE_STRING);
-            $dataDocente['nombre'] 			= filter_var($data['nombre_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['ap1'] 			= filter_var($data['ap1_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['ap2'] 			= filter_var($data['ap2_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['curp'] 			= filter_var($data['curp_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['rfc'] 			= filter_var($data['rfc_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['direccion'] 		= filter_var($data['direccion_docente'],		FILTER_SANITIZE_STRING);
-            $dataDocente['telefono'] 		= filter_var($data['telefono_docente'], 		FILTER_SANITIZE_STRING);
-            $dataDocente['email'] 			= filter_var($data['email_docente'], 			FILTER_SANITIZE_EMAIL);
-            $dataDocente['facebook'] 		= filter_var($data['facebook_docente'], 		FILTER_SANITIZE_STRING);
-            $dataDocente['grupo'] 			= filter_var($data['grupo_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['grado'] 			= filter_var($data['grado_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['turno'] 			= filter_var($data['turno_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['rol'] 			= filter_var($data['rol_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['estatus'] 		= filter_var($data['estatus_docente'], 			FILTER_SANITIZE_STRING);
-
-            $docente = new DocenteEntity($dataDocente);
-            $mapper = new DocenteMapper($this->db);
-            $listaDocente = $mapper->updateDocenteById($docente);
-            return $response->withJson($listaDocente,200);
-        }catch (Exception $e){
-            return $response->withJson($e->getMessage(),200);
-        }
-    });
-/**************** */
 
 /*********/
 /**Rutas Alumnos */

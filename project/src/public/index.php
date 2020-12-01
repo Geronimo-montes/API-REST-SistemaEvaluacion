@@ -26,7 +26,26 @@
         return $pdo;
     };
 
-    //Login terminado completamente
+    //Borrar no sirve, se reimplemeto validacion de sesion
+    $app->post('/validarUser', function (Request $request, Response $response) {
+        try{
+            $data = $request->getParsedBody();
+            $token = filter_var($data['token'], FILTER_SANITIZE_STRING);
+
+            $mapper = new DocenteMapper($this->db);
+            $validacion = $mapper->validarToken( $token );  
+        
+            if($validacion != NULL)
+                $res = ['success' => true, 'id' => $validacion];
+            else
+                $res = ['success' => false, 'error' => 'Error al validar token.'];
+
+            return $response->withJson( $res, 200);
+        }catch (Exception $e){
+            return $response->withJson($e->getMessage(),200);
+        }
+    });
+    //Login **
     $app->post('/login', function (Request $request, Response $response) {
         try{
             $data = $request->getParsedBody();
@@ -52,116 +71,114 @@
             return $response->withJson(array('error' => 'Error al auntenticar usuario.'));
         }
     });
-    //validacion de las credecioanles terminado
-    $app->post('/validarUser', function (Request $request, Response $response) {
+    //update **
+    $app->put('/user/update', function (Request $request, Response $response, $args) {
         try{
+            $token = $request->getHeader('HTTP_AUTHORIZATION');
             $data = $request->getParsedBody();
-            $token = filter_var($data['token'], FILTER_SANITIZE_STRING);
+            $dataDocente = [
+                'email'	    => filter_var($data['email'], FILTER_SANITIZE_STRING),
+                'password'	=> filter_var($data['password'], FILTER_SANITIZE_STRING),
+                'idDocente'	=> filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT),
+            ];
 
             $mapper = new DocenteMapper($this->db);
-            $validacion = $mapper->validarToken( $token );  
-      
-            if($validacion != NULL)
-                $res = ['success' => true, 'id' => $validacion];
+            $validacion = $mapper->validarToken($token[0]);
+            if($validacion['success'])
+                if($mapper->updateUserById($dataDocente))
+                    $res = ['success' => true, 'mensaje' => 'Usuario y/o contraseña actualizado.'];
+                else
+                    $res = ['success' => false, 'mensaje' => 'Error al actualizar usuario y contraseña.'];
             else
-                $res = ['success' => false, 'error' => 'Error al validar token.'];
-
-            return $response->withJson( $res, 200);
-        }catch (Exception $e){
-            return $response->withJson($e->getMessage(),200);
-        }
-    });
-    //update credenciales terminado
-    $app->post('/user/update', function (Request $request, Response $response, $args) {
-        try{
-            $data = $request->getParsedBody();
-            $dataDocente = [];
-
-            $dataDocente['email'] 	    = filter_var($data['email'], FILTER_SANITIZE_STRING);
-            $dataDocente['password'] 	= filter_var($data['password'], FILTER_SANITIZE_STRING);
-            $dataDocente['idDocente'] 	= filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
-            
-
-            $mapper = new DocenteMapper($this->db);
-            if($mapper->updateUserById($dataDocente)){
-                $res = ['success' => true, 'mensaje' => 'Usuario y/o contraseña actualizado.'];
-            }else{
-                $res = ['success' => false, 'mensaje' => 'Error al actualizar usuario y contraseña.'];
-            }
+                $res = ['success' => false, 'mensaje' => 'Token de sesion no valido.'];
 
             return $response->withJson($res,200);
         }catch (Exception $e){
             return $response->withJson($e->getMessage(),200);
         }
     });
-    //Informacion docente, escuela, ciclo escolar terminado
-    $app->get('/docente/{id}', function (Request $request, Response $response, $args) {
+    //Info Docente **
+    $app->get('/docente', function (Request $request, Response $response, $args) {
         try{
-            $idDocente = (int)$args['id'];
-            $mapper = new DocenteMapper($this->db);
-            $listaDocente = $mapper->getDocenteById($idDocente);
-            $mapper = new EscuelaMapper($this->db);
-            $listaEscuela = $mapper->getEscuelaById($listaDocente[0]['idEscuela']);
-            $mapper = new CicloEscolarMapper($this->db);
-            $ciclo = $mapper->getCicloEscolarByEstatus();
+            $token = $request->getHeader('HTTP_AUTHORIZATION');
 
-            foreach ($listaEscuela as $valor) {
-                foreach ($valor as $key => $value) {
-                    $listaDocente[0][$key . 'Escuela'] = $value;
+            $mapper = new DocenteMapper($this->db);
+            $validacion = $mapper->validarToken($token[0]);
+            if($validacion['success']){
+                $idDocente = Auth::GetId($token[0]);
+                $res = $mapper->getDocenteById($idDocente);
+                $mapper = new EscuelaMapper($this->db);
+                $listaEscuela = $mapper->getEscuelaById($res[0]['idEscuela']);
+                $mapper = new CicloEscolarMapper($this->db);
+                $ciclo = $mapper->getCicloEscolarByEstatus();
+    
+                foreach ($listaEscuela as $valor) {
+                    foreach ($valor as $key => $value) {
+                        $res[0][$key . 'Escuela'] = $value;
+                    }
                 }
-            }
-            foreach ($ciclo as $valor) {
-                foreach ($valor as $key => $value) {
-                    $listaDocente[0][$key . 'Ciclo'] = $value;
-                }
-            }
-            //$res = array_merge($listaDocente, $listaEscuela, $ciclo);
+                foreach ($ciclo as $valor) {
+                    foreach ($valor as $key => $value) {
+                        $res[0][$key . 'Ciclo'] = $value;
+                    }
+                }               
+            }else
+                $res = ['success' => false, 'mensaje' => 'Token de sesion no valido.'];
             
-            return $response->withJson($listaDocente,200);
+            return $response->withJson($res,200);
         }catch (Exception $e){
             return $response->withJson($e->getMessage(),200);
         }
     });
-    //actualizar datos del docente terminado
-    $app->post('/docente/update', function (Request $request, Response $response, $args) {
+    //Update Docente **
+    $app->put('/docente/update', function (Request $request, Response $response, $args) {
         try{
+            $token = $request->getHeader('HTTP_AUTHORIZATION');
+            
             $data = $request->getParsedBody();
-            $dataDocente = [];
+            $dataDocente = [
+                    'idDocente'		=>  filter_var($data['idDocente_docente'], 	FILTER_SANITIZE_NUMBER_INT),
+                    'nombre'		=>  filter_var($data['nombre_docente'], 	FILTER_SANITIZE_STRING),
+                    'ap1'			=>  filter_var($data['ap1_docente'], 		FILTER_SANITIZE_STRING),
+                    'ap2'			=>  filter_var($data['ap2_docente'], 		FILTER_SANITIZE_STRING),
+                    'curp'			=>  filter_var($data['curp_docente'], 		FILTER_SANITIZE_STRING),
+                    'rfc'			=>  filter_var($data['rfc_docente'], 		FILTER_SANITIZE_STRING),
+                    'direccion'		=>  filter_var($data['direccion_docente'],	FILTER_SANITIZE_STRING),
+                    'telefono'		=>  filter_var($data['telefono_docente'], 	FILTER_SANITIZE_STRING),
+                    'facebook'		=>  filter_var($data['facebook_docente'], 	FILTER_SANITIZE_STRING),
+                    'grupo'			=>  filter_var($data['grupo_docente'], 		FILTER_SANITIZE_STRING),
+                    'grado'			=>  filter_var($data['grado_docente'], 		FILTER_SANITIZE_STRING),
+                    'turno'			=>  filter_var($data['turno_docente'], 		FILTER_SANITIZE_STRING),
+                    'rol'			=>  filter_var($data['rol_docente'], 		FILTER_SANITIZE_STRING),
+                    'estatus'		=>  filter_var($data['estatus_docente'], 	FILTER_SANITIZE_STRING),
+            ];
 
-            $dataDocente['idDocente'] 		= filter_var($data['idDocente_docente'], 		FILTER_SANITIZE_NUMBER_INT);
-            $dataDocente['nombre'] 			= filter_var($data['nombre_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['ap1'] 			= filter_var($data['ap1_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['ap2'] 			= filter_var($data['ap2_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['curp'] 			= filter_var($data['curp_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['rfc'] 			= filter_var($data['rfc_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['direccion'] 		= filter_var($data['direccion_docente'],		FILTER_SANITIZE_STRING);
-            $dataDocente['telefono'] 		= filter_var($data['telefono_docente'], 		FILTER_SANITIZE_STRING);
-            $dataDocente['facebook'] 		= filter_var($data['facebook_docente'], 		FILTER_SANITIZE_STRING);
-            $dataDocente['grupo'] 			= filter_var($data['grupo_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['grado'] 			= filter_var($data['grado_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['turno'] 			= filter_var($data['turno_docente'], 			FILTER_SANITIZE_STRING);
-            $dataDocente['rol'] 			= filter_var($data['rol_docente'], 				FILTER_SANITIZE_STRING);
-            $dataDocente['estatus'] 		= filter_var($data['estatus_docente'], 			FILTER_SANITIZE_STRING);
-
-            $docente = new DocenteEntity($dataDocente);
             $mapper = new DocenteMapper($this->db);
-            $listaDocente = $mapper->updateDocenteById($docente);
-            $mapper = new EscuelaMapper($this->db);
-            $listaEscuela = $mapper->getEscuelaById($listaDocente[0]['idEscuela']);
-            $mapper = new CicloEscolarMapper($this->db);
-            $ciclo = $mapper->getCicloEscolarByEstatus();
+            $validacion = $mapper->validarToken($token[0]);
+            if($validacion['success']){
+                $docente = new DocenteEntity($dataDocente);
+                $listaDocente = $mapper->updateDocenteById($docente);
+                $mapper = new EscuelaMapper($this->db);
+                $listaEscuela = $mapper->getEscuelaById($listaDocente[0]['idEscuela']);
+                $mapper = new CicloEscolarMapper($this->db);
+                $ciclo = $mapper->getCicloEscolarByEstatus();
+    
+                foreach ($listaEscuela as $valor) {
+                    foreach ($valor as $key => $value) {
+                        $listaDocente[0][$key . 'Escuela'] = $value;
+                    }
+                }
+                foreach ($ciclo as $valor) {
+                    foreach ($valor as $key => $value) {
+                        $listaDocente[0][$key . 'Ciclo'] = $value;
+                    }
+                }
 
-            foreach ($listaEscuela as $valor) {
-                foreach ($valor as $key => $value) {
-                    $listaDocente[0][$key . 'Escuela'] = $value;
-                }
-            }
-            foreach ($ciclo as $valor) {
-                foreach ($valor as $key => $value) {
-                    $listaDocente[0][$key . 'Ciclo'] = $value;
-                }
-            }
-            return $response->withJson($listaDocente,200);
+                $res = ['success' => true, 'mensaje' => 'Datos actualizados correctamente.','data' => $listaDocente];
+            }else
+                $res = ['success' => false, 'mensaje' => 'Datos no actualizados. Token de sesion no valido.'];
+
+            return $response->withJson($res,200);
         }catch (Exception $e){
             return $response->withJson($e->getMessage(),200);
         }

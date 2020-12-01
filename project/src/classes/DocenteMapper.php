@@ -105,7 +105,7 @@
             }
         }
 
-        /**Auntenticacion del usuario*/
+        /**Funciones referetes a los usuarios*/
         public function logIn($data) {/** */
             $sql = "SELECT idDocente FROM docente WHERE email = :email AND contraseña = :password";
             $stmt = $this->db->prepare($sql);
@@ -113,9 +113,8 @@
             $stmt->bindParam(":password", $data['password'], PDO::PARAM_STR, 20);
             $results = NULL;            
             if($stmt->execute())
-                while ($row = $stmt->fetch()){
+                while ($row = $stmt->fetch())
                     $results = $row['idDocente'];
-                }    
 
             return $results;
         }
@@ -127,8 +126,6 @@
                     WHERE idDocente = :idDocente";
 
             $stmt = $this->db->prepare($sql);
-
-
             $stmt->bindParam(":email", $data['email'], PDO::PARAM_STR, 80);
             $stmt->bindParam(":password", $data['password'], PDO::PARAM_STR, 20);
             $stmt->bindParam(":idDocente",  $data['idDocente'], PDO::PARAM_INT);
@@ -175,13 +172,16 @@
             $sql = "SELECT idDocente FROM docente WHERE token = :token";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(":token", $data, PDO::PARAM_STR, 215);
-            $results = NULL;            
             if($stmt->execute())
-                while ($row = $stmt->fetch()){
-                    $results = $row['idDocente'];
-                }    
-                
-            return $results;
+                if($stmt->rowCount() > 0){
+                    while ($row = $stmt->fetch())
+                      $id = $row['idDocente'];
+                    return ['success' => true, 'id' => $id];
+                }else
+                    return ['success' => false, 'mensaje' => 'Token no valido'];
+
+
+            return $res;
         }
     }
 ?>  
