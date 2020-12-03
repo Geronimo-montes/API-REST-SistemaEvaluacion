@@ -25,7 +25,11 @@
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         return $pdo;
     };
-
+    /**
+     * $token = $request->getHeader('HTTP_AUTHORIZATION');
+     * $mapper = new DocenteMapper($this->db);
+     * $validacion = $mapper->validarToken($token[0]);
+     */
     //Borrar no sirve, se reimplemeto validacion de sesion
     $app->post('/validarUser', function (Request $request, Response $response) {
         try{
@@ -70,6 +74,20 @@
         }catch (Exception $e){
             return $response->withJson(array('error' => 'Error al auntenticar usuario.'));
         }
+    });
+    //Login **
+    $app->put('/logout', function (Request $request, Response $response) {
+      try{
+          $token = $request->getHeader('HTTP_AUTHORIZATION');
+          $mapper = new DocenteMapper($this->db);
+          $id = Auth::GetId($token[0]);  
+          if($mapper->insertToken([ "id" => $id, "token" => '' ]))           
+            return $response->withJson(true, 200);
+          else
+            return $response->withJson(false, 200);
+      }catch (Exception $e){
+        return $response->withJson(array('error' => $e.getMessage()));
+      }
     });
     //update **
     $app->put('/user/update', function (Request $request, Response $response, $args) {
@@ -183,42 +201,25 @@
             return $response->withJson($e->getMessage(),200);
         }
     });
-    /*****************************************************************************************************************/
-    //Actualizar el ciclo escolar
-    $app->post('/cicloescolar/insert', function (Request $request, Response $response) {
+    //alumnos *
+    $app->get('/alumno/{grupo}/{grado}/{turno}', function (Request $request, Response $response, $args) {
         try{
-            $data = $request->getParsedBody();
-            $dataCiclo = [];
+            $token = $request->getHeader('HTTP_AUTHORIZATION');
 
-            $dataCiclo['idCicloEscolar'] = filter_var($data['idCicloEscolar_cicloEscolar'], FILTER_SANITIZE_NUMBER_INT);
-            $dataCiclo['nombre'] = filter_var($data['nombre_cicloEscolar'], FILTER_SANITIZE_STRING);
-            $dataCiclo['inicioCiclo'] = filter_var($data['inicioCiclo_cicloEscolar'], FILTER_SANITIZE_STRING);
-            $dataCiclo['finCiclo'] = filter_var($data['finCiclo_cicloEscolar'], FILTER_SANITIZE_STRING);
-            $dataCiclo['diasHabiles'] = filter_var($data['diasHabiles_cicloEscolar'], FILTER_SANITIZE_STRING);
-            $dataCiclo['estatus'] = filter_var($data['estatus_cicloEscolar'], FILTER_SANITIZE_STRING);                
+            $grupo = $args['grupo'];
+            $grado = $args['grado'];
+            $turno = $args['turno'];
 
-            $ciclo = new CicloEscolarEntity($dataCiclo);
-            $mapper = new CicloEscolarMapper($this->db);
-            $insert = $mapper->insertCicloEscolar($ciclo);
-            
-            return $response->withJson($insert,200);
-        }catch (Exception $e){
-            return $response->withJson($e->getMessage(),200);
-        }
-    }); 
-    
-    //alumnos
-    $app->post('/alumno', function (Request $request, Response $response, $args) {
-        try{
-            $data = $request->getParsedBody();
+            $mapper = new DocenteMapper($this->db);
+            $validacion = $mapper->validarToken($token[0]);
+            if($validacion['success']){
+                $mapper = new AlumnoMapper($this->db);
+                $listaAlumnos = $mapper->getAlumnos($grupo, $grado, $turno);
+                $res = ['success' => true, 'mensaje' => 'Consulta realizada con exito', 'data' => $listaAlumnos];
+            }else
+                $res = ['success' => false, 'mensaje' => 'Token de sesion no valido.'];
 
-            $grupo = filter_var($data['grupo_alumno'], FILTER_SANITIZE_STRING);
-            $grado = filter_var($data['grado_alumno'], FILTER_SANITIZE_STRING);
-            $turno = filter_var($data['turno_alumno'], FILTER_SANITIZE_STRING);
-
-            $mapper = new AlumnoMapper($this->db);
-            $listaAlumnos = $mapper->getAlumnos($grupo, $grado, $turno);
-            return $response->withJson($listaAlumnos,200);
+            return $response->withJson($listaAlumnos, 200);
         }catch (Exception $e){
             return $response->withJson($e->getMessage(),200);
         }

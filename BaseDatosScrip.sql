@@ -58,10 +58,16 @@ CREATE TABLE alumno (
 
 ) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_spanish2_ci;  
 
-INSERT INTO alumno VALUES (1, 1, "SEBASTIAN ALEXANDER",    "ALAMEA", "INDA",       "AAIS150220HSLLNBA1", "A", "3", "v", "Mama de Alexander",   "Ahome, Cohuibampo", "6689874563", "email_1@email.com", "Mama de Alexander",    "Whatsapp", "a");
-INSERT INTO alumno VALUES (2, 1, "JOSE MANUEL",            "CASTRO", "VALENZUELA", "CAVM150807HSLSLNA9", "A", "3", "v", "Mama de Manule",      "Ahome, Cohuibampo", "6688979854", "email_2@email.com", "Mama de Manule",       "Whatsapp", "a");
-INSERT INTO alumno VALUES (3, 1, "AZIS DONALDO",           "CHAVEZ", "DIAZ",       "CADA150208HSLHZZA1", "A", "3", "v", "Mama de Donaldo",     "Ahome, Cohuibampo", "6687961616", "email_3@email.com", "Mama de Donaldo",      "Whatsapp", "a");
-INSERT INTO alumno VALUES (4, 1, "YEIMI ANGELIQUE",        "COTA",   "VALENZUELA", "COVY150124MSLTLMA1", "A", "3", "v", "Mama de ANGELIQUE",   "Ahome, Cohuibampo", "6688799798", "email_4@email.com", "Mama de ANGELIQUE",    "Whatsapp", "a");
+INSERT INTO alumno VALUES (1, 1, "SEBASTIAN ALEXANDER",     "ALAMEA",   "INDA",       "AAIS150220HSLLNBA1", "A", "3", "v", "Mama de Alexander",     "Ahome, Cohuibampo", "6689874563", "email_1@email.com", "Mama de Alexander",    "Whatsapp", "a" , "Ciclo 2021-2022/1");
+INSERT INTO alumno VALUES (2, 1, "JOSE MANUEL",             "CASTRO",   "VALENZUELA", "CAVM150807HSLSLNA9", "A", "3", "v", "Mama de Manule",        "Ahome, Cohuibampo", "6688979854", "email_2@email.com", "Mama de Manule",       "Whatsapp", "a" , "Ciclo 2021-2022/2");
+INSERT INTO alumno VALUES (3, 1, "AZIS DONALDO",            "CHAVEZ",   "DIAZ",       "CADA150208HSLHZZA1", "A", "3", "v", "Mama de Donaldo",       "Ahome, Cohuibampo", "6687961616", "email_3@email.com", "Mama de Donaldo",      "Whatsapp", "a" , "Ciclo 2021-2022/3");
+INSERT INTO alumno VALUES (4, 1, "YEIMI ANGELIQUE",         "COTA",     "VALENZUELA", "COVY150124MSLTLMA1", "A", "3", "v", "Mama de ANGELIQUE",     "Ahome, Cohuibampo", "6688799798", "email_4@email.com", "Mama de ANGELIQUE",    "Whatsapp", "a" , "Ciclo 2021-2022/4");
+INSERT INTO alumno VALUES (6, 1, "JESUS",                   "VAZQUEZ",  "VALENZUELA", "COVY150124MSLTLMA2", "A", "3", "v", "Mama de JESUS",         "Ahome, Cohuibampo", "6688799791", "email_4@email.com", "Mama de JESUS",        "Whatsapp", "a" , "Ciclo 2021-2022/6");
+INSERT INTO alumno VALUES (7, 1, "MARIO",                   "BARRERAS", "VALENZUELA", "COVY150124MSLTLMA3", "A", "3", "v", "Mama de MARIO",         "Ahome, Cohuibampo", "6688799792", "email_4@email.com", "Mama de MARIO",        "Whatsapp", "a" , "Ciclo 2021-2022/7");
+INSERT INTO alumno VALUES (8, 1, "JUAN",                    "INDA",     "VALENZUELA", "COVY150124MSLTLMA4", "A", "3", "v", "Mama de JUAN",          "Ahome, Cohuibampo", "6688799793", "email_4@email.com", "Mama de JUAN",         "Whatsapp", "a" , "Ciclo 2021-2022/8");
+INSERT INTO alumno VALUES (9, 1, "PEPITO",                  "DIAZ",     "VALENZUELA", "COVY150124MSLTLMA5", "A", "3", "v", "Mama de PEPITO",        "Ahome, Cohuibampo", "6688799794", "email_4@email.com", "Mama de PEPITO",       "Whatsapp", "a" , "Ciclo 2021-2022/9");
+INSERT INTO alumno VALUES (10, 1, "ALEJANDRA",               "LOPEZ",    "VALENZUELA", "COVY150124MSLTLMA6", "A", "3", "v", "Mama de ALEJANDRA",     "Ahome, Cohuibampo", "6688799795", "email_4@email.com", "Mama de ALEJANDRA",    "Whatsapp", "a", "Ciclo 2021-2022/10");
+INSERT INTO alumno VALUES (11, 1, "MARIOA",                  "QUINTANA", "VALENZUELA", "COVY150124MSLTLMA7", "A", "3", "v", "Mama de MARIOA",        "Ahome, Cohuibampo", "6688799796", "email_4@email.com", "Mama de MARIOA",       "Whatsapp", "a", "Ciclo 2021-2022/11");
 
 CREATE TABLE periodoEvaluacion (
     idPeriodoEvaluacion tinyint PRIMARY KEY,
