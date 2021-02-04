@@ -1,33 +1,35 @@
-<?php 
-    class NivelDesempenoMapper extends Mapper{
-        public function getNivelDesempeno (){
-            $sql = "SELECT idNivelDesempeno, nombre, abreviacion, valorNumerico 
-            FROM NivelDesempeno";
+<?php
+class NivelDesempenoMapper extends Mapper
+{
+	public function getNivelDesempeno()
+	{
+		$sql = "SELECT idNivelDesempeno, nombre, abreviacion, valorNumerico 
+            FROM niveldesempeno";
 
-            $stmt = $this->db->query($sql);
+		$stmt = $this->db->query($sql);
 
-            $results = [];
-            while ($row = $stmt->fetch()){
-                $results[] = new NivelDesempenoEntity($row);
-            }
+		$results = [];
+		while ($row = $stmt->fetch()) {
+			$results[] = new NivelDesempenoEntity($row);
+		}
 
-            return $results;
-        }
+		return $results;
+	}
 
-        public function getNivelDesempenoById ($id){
-            $sql = "SELECT idNivelDesempeno, nombre, abreviacion, valorNumerico 
-            FROM NivelDesempeno WHERE idNivelDesempeno = :idNivelDesempeno";
+	public function getNivelDesempenoById($id)
+	{
+		$sql = "SELECT idNivelDesempeno, nombre, abreviacion, valorNumerico 
+            FROM niveldesempeno WHERE idNivelDesempeno = :idNivelDesempeno";
 
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(":idNivelDesempeno", $id, PDO::PARAM_INT);
+		$stmt = $this->db->prepare($sql);
+		$stmt->bindParam(":idNivelDesempeno", $id, PDO::PARAM_INT);
 
-            if($stmt->execute()){
-                $results = [];
-                $results = $stmt->fetch();
-                
-                if(!empty($results))
-                    return new NivelDesempenoEntity($results);
-            }
-        }
-    }
-?>
+		if ($stmt->execute()) {
+			$results = [];
+			$results = $stmt->fetch();
+
+			if (!empty($results))
+				return new NivelDesempenoEntity($results);
+		}
+	}
+}

@@ -1,55 +1,71 @@
 <?php
+
 use Firebase\JWT\JWT;
 
-class Auth {
-    private static $secret_key = 'Sdw1s9x8@';
-    private static $encrypt = ['HS256'];
-    private static $aud = null;
+class Auth
+{
+	private static $secret_key = 'Sdw1s9x8@';
+	private static $encrypt = ['HS256'];
+	private static $aud = null;
 
-    public static function SignIn($id) {
-        $token = array(
-            'exp' => time() + (60*60),
-            'aud' => self::Aud(),
-            'id'  => $id
-        );
-        return JWT::encode($token, self::$secret_key);
-    }
+	public static function SignIn($id, $idUsuario)
+	{
+		$token = array(
+			'exp' => time() + (60 * 60),
+			'aud' => self::Aud(),
+			'id'  => $id,
+			'idUsuario' => $idUsuario
+		);
+		return JWT::encode($token, self::$secret_key);
+	}
 
-    public static function Check($token) {
-        if(empty($token))
-            throw new Exception("Invalid token supplied.");
+	public static function Check($token)
+	{
+		if (empty($token))
+			throw new Exception("Invalid token supplied.");
 
-        $decode = JWT::decode(
-            $token,
-            self::$secret_key,
-            self::$encrypt
-        );
+		$decode = JWT::decode(
+			$token,
+			self::$secret_key,
+			self::$encrypt
+		);
 
-        if($decode->aud !== self::Aud())
-            throw new Exception("Invalid user logged in.");
-    }
+		if ($decode->aud !== self::Aud())
+			throw new Exception("Invalid user logged in.");
+	}
 
-    public static function GetId($token) {
-        return JWT::decode(
-            $token,
-            self::$secret_key,
-            self::$encrypt
-        )->id;
-    }
+	public static function GetId($token)
+	{
+		return JWT::decode(
+			$token,
+			self::$secret_key,
+			self::$encrypt
+		)->id;
+	}
 
-    private static function Aud() {
-        $aud = '';
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $aud = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $aud = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $aud = $_SERVER['REMOTE_ADDR'];
-        }
+	public static function GetIdUsario($token)
+	{
+		return JWT::decode(
+			$token,
+			self::$secret_key,
+			self::$encrypt
+		)->idUsuario;
+	}
 
-        $aud .= @$_SERVER['HTTP_USER_AGENT'];
-        $aud .= gethostname();
+	private static function Aud()
+	{
+		$aud = '';
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+			$aud = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$aud = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} else {
+			$aud = $_SERVER['REMOTE_ADDR'];
+		}
 
-        return sha1($aud);
-    }
+		$aud .= @$_SERVER['HTTP_USER_AGENT'];
+		$aud .= gethostname();
+
+		return sha1($aud);
+	}
 }

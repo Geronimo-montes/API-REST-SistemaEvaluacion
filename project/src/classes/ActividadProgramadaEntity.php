@@ -8,6 +8,7 @@
         protected $nivelDesempenoPonderado;
         protected $observacion;
         protected $fecha;
+        protected $hora;
         protected $estatus; //a:activa t:terminada e:empezada b:baja/canceladax
 
         public function __construct(array $data){
@@ -19,6 +20,7 @@
             (isset($data['nivelDesempenoPonderado'])) ? $this->nivelDesempenoPonderado = $data['nivelDesempenoPonderado'] : $this->nivelDesempenoPonderado = NULL;
             (isset($data['observacion']))             ? $this->observacion = $data['observacion']                         : $this->observacion = NULL;
             (isset($data['fecha']))                   ? $this->fecha = $data['fecha']                                     : $this->fecha = NULL;
+            (isset($data['hora']))                   ? $this->hora = $data['hora']                                     : $this->fecha = NULL;
             (isset($data['estatus']))                 ? $this->estatus = $data['estatus']                                 : $this->estatus = NULL;            
         }
         
@@ -30,6 +32,6 @@
         public function getnivelDesempenoPonderado() { return $this->nivelDesempenoPonderado; }
         public function getobservacion()             { return $this->observacion; }
         public function getfecha()                   { return $this->fecha; }
+        public function gethora()                   { return $this->hora; }
         public function getestatus()                 { return $this->estatus; }        
     }
-?>

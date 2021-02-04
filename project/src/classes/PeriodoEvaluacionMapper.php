@@ -2,7 +2,7 @@
     class PeriodoEvaluacionMapper extends Mapper{
         public function getPeriodosEvaluacion (){
             $sql = "SELECT idPeriodoEvaluacion, nombre, numeroEvaluacion, mesInicio, mesFinal, estatus 
-            FROM periodoEvaluacion WHERE estatus = 'a'";
+            FROM periodoevaluacion WHERE estatus = 'a'";
 
             $stmt = $this->db->query($sql);
 
@@ -16,7 +16,7 @@
 
         public function getPeriodoEvaluacionById ($id){
             $sql = "SELECT idPeriodoEvaluacion, nombre, numeroEvaluacion, mesInicio, mesFinal, estatus 
-            FROM periodoEvaluacion WHERE idPeriodoEvaluacion = :idPeriodoEvaluacion";
+            FROM periodoevaluacion WHERE idPeriodoEvaluacion = :idPeriodoEvaluacion";
 
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(":idPeriodoEvaluacion", $id, PDO::PARAM_INT);
@@ -30,4 +30,3 @@
             }
         }
     }
-?>
